@@ -1,0 +1,39 @@
+name: build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build .saver (macOS)
+    runs-on: macos-15
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # The copyright-protected sprite assets are never committed (see
+      # openspec/ASSETS.md), so CI builds the bundle without them. The
+      # artifact is a build-verification byproduct; a working saver needs
+      # sprites sourced from your own copy of Flying Toasters 1.2.saver.
+      - name: Build saver (assetless)
+        run: ./build.sh --no-assets
+
+      - name: Verify bundle metadata and signature
+        run: |
+          /usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" OpenToasters.saver/Contents/Info.plist
+          /usr/libexec/PlistBuddy -c "Print :NSPrincipalClass" OpenToasters.saver/Contents/Info.plist
+          codesign -v OpenToasters.saver
+
+      - name: Smoke test (offscreen preview harness)
+        run: ./preview "OpenToasters.saver" 6 30 1280 800
+
+      - name: Upload saver artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: OpenToasters.saver
+          path: OpenToasters.saver/**
+          root-directory: .
+          if-no-files-found: error

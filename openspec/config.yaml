@@ -1,0 +1,46 @@
+# OpenSpec — project configuration
+# Specs are the source of truth for the screensaver's behavior. Code is
+# updated to match specs; specs change only through an explicit change.
+
+project:
+  name: "OpenToasters"
+  bundle_id: "com.opentoasters.saver"
+  version: "2.0"
+  platform: "macOS 11+ (arm64; Intel-compatible build)"
+  language: "Objective-C (AppKit + ScreenSaver framework)"
+  description: >
+    A from-scratch rebuild of the classic AfterDark "Flying Toasters"
+    screensaver. Same sprite assets (personal-use copy from the installed
+    original), but with zero per-frame allocations, a unified right-to-left
+    flight stream, depth/parallax layers, wind drift, and a full settings
+    sheet.
+  copyright: >
+    Sprite assets (c) Infinisy / Stardock (AfterDark "Flying Toasters").
+    The assets are NOT committed — see ASSETS.md for the manifest so anyone
+    can source them from their own copy of the original.
+
+spec_conventions:
+  layout:
+    - "openspec/config.yaml        — this file (project + conventions)"
+    - "openspec/ASSETS.md          — sprite asset manifest (copyright)"
+    - "openspec/specs/<feature>/   — one directory per feature"
+    - "openspec/specs/<feature>/spec.md — that feature's spec document"
+  format: >
+    Each spec.md has: a Title, an Overview, a Parameters/Configuration
+    table, and numbered Requirements. Requirements are single, testable
+    MUST/SHOULD statements so they can be verified against the code.
+  status: "All specs describe the implemented behavior (v2.0)."
+
+features:
+  - { id: flight,             title: "Flight stream",        summary: "Unified right-to-left flock with per-toaster angle spread." }
+  - { id: bounce,             title: "Bounce",               summary: "Vertical bob; 50%-softer default, Bounce option." }
+  - { id: flapping,           title: "Flapping & spin",      summary: "Wingbeat loops and spinner (rotation) classes; Flap option." }
+  - { id: wind,               title: "Wind drift",           summary: "Slowly-varying global wind vector; Wind option." }
+  - { id: depth,              title: "Depth & parallax",     summary: "Depth z; far toasters smaller and slower." }
+  - { id: density,            title: "Density",              summary: "Toaster count scaled linearly by screen area." }
+  - { id: characters,         title: "Character classes",    summary: "32 sprite types; weighted normal/spinner/surprise spawn." }
+  - { id: special-maneuvers,  title: "Special maneuvers",    summary: "Optional tumbles for non-spinner characters." }
+  - { id: background,         title: "Celestial background", summary: "Procedural starfield plus faint drifting bodies." }
+  - { id: settings,           title: "Settings",             summary: "Options sheet, every option; NSUserDefaults persistence." }
+  - { id: memory,             title: "Memory",               summary: "Zero per-frame allocations; sprites decoded once, freed on stop." }
+  - { id: build,              title: "Build & install",      summary: "build.sh compiles the .saver + preview harness; ad-hoc sign." }
